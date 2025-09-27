@@ -13,6 +13,7 @@ class CreateGapminderDB:
                                 "population", "geography"]
             
         def import_as_dataframe(self):
+            #資料載入
             df_dict = {}  
             for file_name, table_name in zip(self.file_names, self.table_names):
                 file_path = f"data/{file_name}.csv"
@@ -21,11 +22,13 @@ class CreateGapminderDB:
             return df_dict
         
         def create_database(self):
+            #建立資料庫
             connection = sqlite3.connect("data/gapminder.db")
             df_dict = self.import_as_dataframe()
             for k,v in df_dict.items():
                 v.to_sql(name=k,con=connection,index=False,if_exists="replace")
-                
+                    
+            #資料庫連線，建立檢視表    
             drop_view_sql = """
             DROP VIEW IF EXISTS plotting
             """
@@ -54,4 +57,5 @@ class CreateGapminderDB:
             connection.close()
 
 create_gapminder_db = CreateGapminderDB()
+
 create_gapminder_db.create_database()
